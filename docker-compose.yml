@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - amazon_campaign
+    volumes:
+      - /data/db/redis
+    ports:
+      - "6379:6379"
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    container_name: elasticsearch
+    networks:
+      - amazon_campaign
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      discovery.type: single-node
+      #ES_JAVA_OPTS: -Xms2G -Xmx2G
+      xpack.security.enabled: "true"
+      ELASTIC_PASSWORD: amazon_campaign
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.2
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    networks:
+      - amazon_campaign
+    ports:
+      - "5601:5601"
+    environment:
+      SERVER_NAME: kibana
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: amazon_campaign
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+
+
+networks:
+  amazon_campaign:
+    name: amazon_campaign
