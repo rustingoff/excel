@@ -6,4 +6,4 @@ COPY . .
 RUN CGO_ENABLED=0  go build -a -installsuffix cgo -o main ./app/main.go
 RUN chmod +x ./main
 EXPOSE 8080
-CMD ["./main"]
+CMD ["./main", "docker-compose up -d"]
