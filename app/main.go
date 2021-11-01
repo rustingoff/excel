@@ -28,7 +28,7 @@ func main() {
 	router.POST("/delete/:id", handlers.Delete)
 
 	srv := new(server.Server)
-	if err := srv.Run(":80", router); err != nil {
+	if err := srv.Run(":8080", router); err != nil {
 		panic(err)
 	}
 }

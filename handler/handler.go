@@ -48,7 +48,7 @@ func (h *handler) Campaign(c *gin.Context) {
 	}
 
 	var totalKeywords uint64
-	today := time.Now()
+	today, _ := time.LoadLocation("America/Los_Angeles")
 	keywords := strings.Split(c.PostForm("keywords"), "\r\n")
 	negativeKeywords := strings.Split(c.PostForm("negative_keywords"), "\r\n")
 	bid, _ := strconv.ParseFloat(c.PostForm("bid"), 32)
@@ -61,7 +61,7 @@ func (h *handler) Campaign(c *gin.Context) {
 
 	model := entity.CampaignEntity{
 		CampaignName:      c.PostForm("campaign_name"),
-		CampaignStartDate: today.Format("01/02/2006"),
+		CampaignStartDate: time.Now().In(today).Format("01/02/2006"),
 		DailyBudget:       fmt.Sprintf("%.2f", dailyBudget),
 		MatchType:         c.PostForm("match_type"),
 		Bid:               fmt.Sprintf("%.2f", bid),
