@@ -144,7 +144,7 @@ func (h *handler) Delete(c *gin.Context) {
 		fmt.Println(err.Error())
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "/show")
+	c.Redirect(http.StatusFound, "/show")
 }
 
 func getCampaigns(client *elastic.Client) ([]entity.CampaignEntity, error) {
