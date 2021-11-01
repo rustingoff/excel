@@ -30,7 +30,9 @@ jobs:
         port: 22
         script: |
                 screen -S golang -X quit
-                cd /home/project/excel
-                git pull
+                cd /home/project
+                rm -rf excel/*
+                mkdir excel
+                git clone https://iliaposmac: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@github.com/rustingoff/excel.git
                 screen -dmS golang go run app/main.go
     
