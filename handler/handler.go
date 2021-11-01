@@ -133,7 +133,7 @@ func (h *handler) Export(c *gin.Context) {
 		panic(err)
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "http://46.101.231.27.8080/static/"+campaigns.ID+".xlsx")
+	c.Redirect(http.StatusMovedPermanently, "https://multiply.today/static/"+campaigns.ID+".xlsx")
 }
 
 func (h *handler) Delete(c *gin.Context) {
@@ -144,7 +144,7 @@ func (h *handler) Delete(c *gin.Context) {
 		fmt.Println(err.Error())
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "/show")
+	c.Redirect(http.StatusPermanentRedirect, "/show")
 }
 
 func getCampaigns(client *elastic.Client) ([]entity.CampaignEntity, error) {
