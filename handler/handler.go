@@ -167,27 +167,49 @@ func getCampaigns(client *elastic.Client) ([]entity.CampaignEntity, error) {
 }
 
 func writeExportCampaign(f *excelize.File, count int, campaign entity.CampaignEntity, nameExact string, keywords []string) int {
+	fmt.Println("#1 ===============")
+
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+2), "Campaign")
+	fmt.Println("#2 ===============")
+
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+2), campaign.CampaignName+nameExact)
+	fmt.Println("#3 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("E%d", count+2), campaign.DailyBudget)
+	fmt.Println("#4 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("G%d", count+2), campaign.CampaignStartDate)
+	fmt.Println("#5 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("I%d", count+2), "Manual")
+	fmt.Println("#6 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", count+2), "enabled")
+	fmt.Println("#7 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Z%d", count+2), "Dynamic bidding (down only)")
+	fmt.Println("#8 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+2), "All")
+	fmt.Println("#9 ===============")
 
+	fmt.Println("#10 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+3), "Top of search (page 1)")
+	fmt.Println("#11 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AB%d", count+3), "0%")
+	fmt.Println("#12 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+3), "Campaign By Placement")
+	fmt.Println("#13 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+3), campaign.CampaignName+nameExact)
+	fmt.Println("#14 ===============")
 
+	fmt.Println("#15 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+4), "Rest of search")
+	fmt.Println("#16 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+4), "Campaign By Placement")
+	fmt.Println("#17 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+4), campaign.CampaignName+nameExact)
-
+	fmt.Println("#19 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+5), "Product pages")
+	fmt.Println("#20 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AB%d", count+5), "0%")
+	fmt.Println("#21 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+5), "Campaign By Placement")
+	fmt.Println("#22 ===============")
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+5), campaign.CampaignName+nameExact)
 
 	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+6), "Ad Group")
