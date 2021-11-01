@@ -23,9 +23,9 @@ func main() {
 
 	router.GET("/campaign", handlers.Campaign)
 	router.POST("/campaign", handlers.Campaign)
-	router.GET("/show/campaigns", handlers.Show)
+	router.GET("/show", handlers.Show)
 	router.POST("/export/:id", handlers.Export)
-	router.GET("/delete/:id", handlers.Delete)
+	router.POST("/delete/:id", handlers.Delete)
 
 	srv := new(server.Server)
 	if err := srv.Run(":8080", router); err != nil {

@@ -41,6 +41,14 @@ services:
       ELASTICSEARCH_PASSWORD: amazon_campaign
       ELASTICSEARCH_HOSTS: http://elasticsearch:9200
 
+  go-web-app:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    environment:
+      - VIRTUAL_HOST=localhost
+      - LETSENCRYPT_HOST=localhost
 
 networks:
   amazon_campaign:

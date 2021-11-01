@@ -42,11 +42,17 @@
             <td>{{ .Bid }}</td>
             <td>{{ .SKU }}</td>
             <td>
-                <div class="mb-3">
+                <div class="d-flex flex-row justify-content-start mr-3">
+                <div class="mb-4">
                     <form action="/export/{{ .ID }}" method="post">
                         <input type="submit" class="btn btn-primary" value="Export Excel">
-                        <a href="/delete/{{ .ID }}" target="_self" class="btn btn-dark" >Delete</a>
                     </form>
+                </div>
+                <div class="mb-3">
+                    <form action="/delete/{{ .ID }}" method="post">
+                        <input type="submit" value="Delete" class="btn btn-dark" >
+                    </form>
+                </div>
                 </div>
             </td>
         </tr>

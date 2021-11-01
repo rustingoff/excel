@@ -133,7 +133,7 @@ func (h *handler) Export(c *gin.Context) {
 		panic(err)
 	}
 
-	c.Redirect(http.StatusMovedPermanently, "http://localhost:8080/static/"+campaigns.ID+".xlsx")
+	c.Redirect(http.StatusMovedPermanently, "http://46.101.231.27.8080/static/"+campaigns.ID+".xlsx")
 }
 
 func (h *handler) Delete(c *gin.Context) {
