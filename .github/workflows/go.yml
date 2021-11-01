@@ -31,8 +31,8 @@ jobs:
         script: |
                 screen -S golang -X quit
                 cd /home/project
-                rm -rf excel/*
-                mkdir excel
+                rm -rf excel/
                 git clone https://iliaposmac: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@github.com/rustingoff/excel.git
+                cd excel
                 screen -dmS golang go run app/main.go
     
