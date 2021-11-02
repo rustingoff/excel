@@ -124,7 +124,7 @@ func (h *handler) Export(c *gin.Context) {
 		if j == campaignsCount-1 && campaignsCount > 1 {
 			restKeyCount = len(campaigns.Keywords) % int(campaigns.TotalKeywords)
 			if restKeyCount > 0 {
-				c, err = writeExportCampaign(f, ((j+1)*6)+count, campaigns, " - Exact1", campaigns.Keywords[int(campaigns.TotalKeywords)*(j+1):len(campaigns.Keywords)])
+				_, err = writeExportCampaign(f, ((j+1)*6)+count, campaigns, " - Exact1", campaigns.Keywords[int(campaigns.TotalKeywords)*(j+1):len(campaigns.Keywords)])
 				if err != nil {
 					panic(err)
 				}
@@ -147,10 +147,10 @@ func (h *handler) Delete(c *gin.Context) {
 
 	_, err := h.elastic.Delete().Index("amazon_campaign").Id(campaignID).Do(context.TODO())
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err)
 	}
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Millisecond * 1000)
 	c.Redirect(http.StatusMovedPermanently, "/show")
 }
 
