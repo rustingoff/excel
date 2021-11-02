@@ -116,12 +116,18 @@ func (h *handler) Export(c *gin.Context) {
 		} else {
 			matchType = " - " + campaigns.MatchType
 		}
-		c := writeExportCampaign(f, (j*6)+count, campaigns, matchType, campaigns.Keywords[int(campaigns.TotalKeywords)*j:int(campaigns.TotalKeywords)*(j+1)])
+		c, err := writeExportCampaign(f, (j*6)+count, campaigns, matchType, campaigns.Keywords[int(campaigns.TotalKeywords)*j:int(campaigns.TotalKeywords)*(j+1)])
+		if err != nil {
+			panic(err)
+		}
 		count += int(campaigns.TotalKeywords) + c
 		if j == campaignsCount-1 && campaignsCount > 1 {
 			restKeyCount = len(campaigns.Keywords) % int(campaigns.TotalKeywords)
 			if restKeyCount > 0 {
-				writeExportCampaign(f, ((j+1)*6)+count, campaigns, " - Exact1", campaigns.Keywords[int(campaigns.TotalKeywords)*(j+1):len(campaigns.Keywords)])
+				c, err = writeExportCampaign(f, ((j+1)*6)+count, campaigns, " - Exact1", campaigns.Keywords[int(campaigns.TotalKeywords)*(j+1):len(campaigns.Keywords)])
+				if err != nil {
+					panic(err)
+				}
 			}
 			count += restKeyCount + 6
 		}
@@ -166,89 +172,206 @@ func getCampaigns(client *elastic.Client) ([]entity.CampaignEntity, error) {
 	return campaigns, nil
 }
 
-func writeExportCampaign(f *excelize.File, count int, campaign entity.CampaignEntity, nameExact string, keywords []string) int {
-	fmt.Println("#1 ===============")
+func writeExportCampaign(f *excelize.File, count int, campaign entity.CampaignEntity, nameExact string, keywords []string) (int, error) {
+	err := f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+2), "Campaign")
+	if err != nil {
+		return 0, err
+	}
 
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+2), "Campaign")
-	fmt.Println("#2 ===============")
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+2), campaign.CampaignName+nameExact)
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("E%d", count+2), campaign.DailyBudget)
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("G%d", count+2), campaign.CampaignStartDate)
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("I%d", count+2), "Manual")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", count+2), "enabled")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Z%d", count+2), "Dynamic bidding (down only)")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+2), "All")
+	if err != nil {
+		return 0, err
+	}
 
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+2), campaign.CampaignName+nameExact)
-	fmt.Println("#3 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("E%d", count+2), campaign.DailyBudget)
-	fmt.Println("#4 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("G%d", count+2), campaign.CampaignStartDate)
-	fmt.Println("#5 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("I%d", count+2), "Manual")
-	fmt.Println("#6 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", count+2), "enabled")
-	fmt.Println("#7 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Z%d", count+2), "Dynamic bidding (down only)")
-	fmt.Println("#8 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+2), "All")
-	fmt.Println("#9 ===============")
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+3), "Top of search (page 1)")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AB%d", count+3), "0%")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+3), "Campaign By Placement")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+3), campaign.CampaignName+nameExact)
+	if err != nil {
+		return 0, err
+	}
 
-	fmt.Println("#10 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+3), "Top of search (page 1)")
-	fmt.Println("#11 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AB%d", count+3), "0%")
-	fmt.Println("#12 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+3), "Campaign By Placement")
-	fmt.Println("#13 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+3), campaign.CampaignName+nameExact)
-	fmt.Println("#14 ===============")
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+4), "Rest of search")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+4), "Campaign By Placement")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+4), campaign.CampaignName+nameExact)
+	if err != nil {
+		return 0, err
+	}
 
-	fmt.Println("#15 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+4), "Rest of search")
-	fmt.Println("#16 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+4), "Campaign By Placement")
-	fmt.Println("#17 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+4), campaign.CampaignName+nameExact)
-	fmt.Println("#19 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+5), "Product pages")
-	fmt.Println("#20 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AB%d", count+5), "0%")
-	fmt.Println("#21 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+5), "Campaign By Placement")
-	fmt.Println("#22 ===============")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+5), campaign.CampaignName+nameExact)
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AA%d", count+5), "Product pages")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("AB%d", count+5), "0%")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+5), "Campaign By Placement")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+5), campaign.CampaignName+nameExact)
+	if err != nil {
+		return 0, err
+	}
 
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+6), "Ad Group")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("K%d", count+6), campaign.Bid)
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", count+6), "enabled")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Q%d", count+6), "enabled")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("J%d", count+6), "Ad Group 1")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+6), campaign.CampaignName+nameExact)
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+6), "Ad Group")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("K%d", count+6), campaign.Bid)
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", count+6), "enabled")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Q%d", count+6), "enabled")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("J%d", count+6), "Ad Group 1")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+6), campaign.CampaignName+nameExact)
+	if err != nil {
+		return 0, err
+	}
 
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+7), "Ad")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("J%d", count+7), "Ad Group 1")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+7), campaign.CampaignName+nameExact)
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("O%d", count+7), campaign.SKU)
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", count+7), "enabled")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Q%d", count+7), "enabled")
-	f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("R%d", count+7), "enabled")
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", count+7), "Ad")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("J%d", count+7), "Ad Group 1")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", count+7), campaign.CampaignName+nameExact)
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("O%d", count+7), campaign.SKU)
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", count+7), "enabled")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Q%d", count+7), "enabled")
+	if err != nil {
+		return 0, err
+	}
+	err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("R%d", count+7), "enabled")
+	if err != nil {
+		return 0, err
+	}
 
 	for j, keyword := range keywords {
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", j+8+count), "Keyword")
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("J%d", j+8+count), "Ad Group 1")
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", j+8+count), campaign.CampaignName+nameExact)
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("L%d", j+8+count), keyword)
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", j+8+count), "enabled")
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Q%d", j+8+count), "enabled")
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("R%d", j+8+count), "enabled")
-		f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("N%d", j+8+count), campaign.MatchType)
+		err := f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", j+8+count), "Keyword")
+		if err != nil {
+			return 0, err
+		}
+		err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("J%d", j+8+count), "Ad Group 1")
+		if err != nil {
+			return 0, err
+		}
+		err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", j+8+count), campaign.CampaignName+nameExact)
+		if err != nil {
+			return 0, err
+		}
+		err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("L%d", j+8+count), keyword)
+		if err != nil {
+			return 0, err
+		}
+		err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", j+8+count), "enabled")
+		if err != nil {
+			return 0, err
+		}
+		err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("Q%d", j+8+count), "enabled")
+		if err != nil {
+			return 0, err
+		}
+		err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("R%d", j+8+count), "enabled")
+		if err != nil {
+			return 0, err
+		}
+		err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("N%d", j+8+count), campaign.MatchType)
+		if err != nil {
+			return 0, err
+		}
 
 		if campaign.NegativeMatchType == "campaign negative phrase" || campaign.NegativeMatchType == "campaign negative exact" {
 			for k, negativeKeyword := range campaign.NegativeKeywords {
-				f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", j+k+9+count), "Keyword")
-				f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", j+k+9+count), campaign.CampaignName+nameExact)
-				f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("L%d", j+k+9+count), negativeKeyword)
-				f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("N%d", j+k+9+count), campaign.NegativeMatchType)
-				f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", j+k+9+count), "enabled")
-				f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("R%d", j+k+9+count), "enabled")
+				err := f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("B%d", j+k+9+count), "Keyword")
+				if err != nil {
+					return 0, err
+				}
+				err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("D%d", j+k+9+count), campaign.CampaignName+nameExact)
+				if err != nil {
+					return 0, err
+				}
+				err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("L%d", j+k+9+count), negativeKeyword)
+				if err != nil {
+					return 0, err
+				}
+				err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("N%d", j+k+9+count), campaign.NegativeMatchType)
+				if err != nil {
+					return 0, err
+				}
+				err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("P%d", j+k+9+count), "enabled")
+				if err != nil {
+					return 0, err
+				}
+				err = f.SetCellValue("Sponsored Products Campaigns", fmt.Sprintf("R%d", j+k+9+count), "enabled")
+				if err != nil {
+					return 0, err
+				}
 			}
 		}
 	}
-	return len(campaign.NegativeKeywords)
+	return len(campaign.NegativeKeywords), nil
 }
 
 func getCampaign(client *elastic.Client, campaignID string) (entity.CampaignEntity, error) {
